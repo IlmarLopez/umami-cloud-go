@@ -1,7 +1,7 @@
 package main
 
 import (
-	"umami-cloud-go/pkg/cfg" // Importación corregida usando tu nombre de módulo
+	"umami-cloud-go/pkg/cfg"
 
 	"github.com/aws/aws-cdk-go/awscdk/v2"
 	"github.com/aws/aws-cdk-go/awscdk/v2/awsec2"
