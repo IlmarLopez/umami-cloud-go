@@ -7,11 +7,11 @@ import (
 	"github.com/aws/jsii-runtime-go"
 )
 
-type UmamiCloudGoStackProps struct {
+type CdkStackProps struct {
 	awscdk.StackProps
 }
 
-func NewUmamiCloudGoStack(scope constructs.Construct, id string, props *UmamiCloudGoStackProps) awscdk.Stack {
+func NewCdkStack(scope constructs.Construct, id string, props *CdkStackProps) awscdk.Stack {
 	var sprops awscdk.StackProps
 	if props != nil {
 		sprops = props.StackProps
@@ -21,7 +21,7 @@ func NewUmamiCloudGoStack(scope constructs.Construct, id string, props *UmamiClo
 	// The code that defines your stack goes here
 
 	// example resource
-	// queue := awssqs.NewQueue(stack, jsii.String("UmamiCloudGoQueue"), &awssqs.QueueProps{
+	// queue := awssqs.NewQueue(stack, jsii.String("CdkQueue"), &awssqs.QueueProps{
 	// 	VisibilityTimeout: awscdk.Duration_Seconds(jsii.Number(300)),
 	// })
 
@@ -33,7 +33,7 @@ func main() {
 
 	app := awscdk.NewApp(nil)
 
-	NewUmamiCloudGoStack(app, "UmamiCloudGoStack", &UmamiCloudGoStackProps{
+	NewCdkStack(app, "umami-cloud-go", &CdkStackProps{
 		awscdk.StackProps{
 			Env: env(),
 		},
