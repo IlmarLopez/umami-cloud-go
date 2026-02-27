@@ -1,70 +1,68 @@
 package main
 
 import (
+	"encoding/json"
+	"fmt"
+	"os"
+
 	"github.com/aws/aws-cdk-go/awscdk/v2"
-	// "github.com/aws/aws-cdk-go/awscdk/v2/awssqs"
-	"github.com/aws/constructs-go/constructs/v10"
 	"github.com/aws/jsii-runtime-go"
 )
 
-type CdkStackProps struct {
-	awscdk.StackProps
+type EnvConfig struct {
+	VpcName string  `json:"vpcName"`
+	Cidr    string  `json:"cidr"`
+	MaxAzs  float64 `json:"maxAzs"`
 }
 
-func NewCdkStack(scope constructs.Construct, id string, props *CdkStackProps) awscdk.Stack {
-	var sprops awscdk.StackProps
-	if props != nil {
-		sprops = props.StackProps
+func loadConfig() (*EnvConfig, error) {
+	env := os.Getenv("ENV")
+	if env == "" {
+		env = "dev"
 	}
-	stack := awscdk.NewStack(scope, &id, &sprops)
 
-	// The code that defines your stack goes here
+	filePath := fmt.Sprintf("config/%s.json", env)
 
-	// example resource
-	// queue := awssqs.NewQueue(stack, jsii.String("CdkQueue"), &awssqs.QueueProps{
-	// 	VisibilityTimeout: awscdk.Duration_Seconds(jsii.Number(300)),
-	// })
-
-	return stack
+	fileData, err := os.ReadFile(filePath)
+	if err != nil {
+		return nil, fmt.Errorf("Error leyendo el archivo %s: %w", filePath, err)
+	}
+	var config EnvConfig
+	err = json.Unmarshal(fileData, &config)
+	if err != nil {
+		return nil, fmt.Errorf("Error parseando el Json: %w", err)
+	}
+	return &config, nil
 }
 
+// main entry point
 func main() {
 	defer jsii.Close()
 
+	config, err := loadConfig()
+	if err != nil {
+		panic(err)
+	}
+
 	app := awscdk.NewApp(nil)
 
-	NewCdkStack(app, "umami-cloud-go", &CdkStackProps{
-		awscdk.StackProps{
-			Env: env(),
-		},
+	envName := os.Getenv("ENV")
+	if envName == "" {
+		envName = "dev"
+	}
+	stackName := fmt.Sprintf("%sNetworkStack", envName)
+
+	NewNetworkStack(app, stackName, &NetworkStackProps{
+		StackProps: awscdk.StackProps{Env: env()},
+		MaxAZs:     config.MaxAzs,
+		VpcName:    config.VpcName,
+		Cidr:       config.Cidr,
 	})
 
 	app.Synth(nil)
 }
 
-// env determines the AWS environment (account+region) in which our stack is to
-// be deployed. For more information see: https://docs.aws.amazon.com/cdk/latest/guide/environments.html
 func env() *awscdk.Environment {
-	// If unspecified, this stack will be "environment-agnostic".
-	// Account/Region-dependent features and context lookups will not work, but a
-	// single synthesized template can be deployed anywhere.
-	//---------------------------------------------------------------------------
 	return nil
 
-	// Uncomment if you know exactly what account and region you want to deploy
-	// the stack to. This is the recommendation for production stacks.
-	//---------------------------------------------------------------------------
-	// return &awscdk.Environment{
-	//  Account: jsii.String("123456789012"),
-	//  Region:  jsii.String("us-east-1"),
-	// }
-
-	// Uncomment to specialize this stack for the AWS Account and Region that are
-	// implied by the current CLI configuration. This is recommended for dev
-	// stacks.
-	//---------------------------------------------------------------------------
-	// return &awscdk.Environment{
-	//  Account: jsii.String(os.Getenv("CDK_DEFAULT_ACCOUNT")),
-	//  Region:  jsii.String(os.Getenv("CDK_DEFAULT_REGION")),
-	// }
 }
