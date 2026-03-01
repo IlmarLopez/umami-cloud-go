@@ -9,6 +9,8 @@ import (
 	"github.com/aws/jsii-runtime-go"
 )
 
+const defaultEnv = "dev"
+
 type EnvConfig struct {
 	VpcName string  `json:"vpcName"`
 	Cidr    string  `json:"cidr"`
@@ -18,24 +20,23 @@ type EnvConfig struct {
 func loadConfig() (*EnvConfig, error) {
 	env := os.Getenv("ENV")
 	if env == "" {
-		env = "dev"
+		env = defaultEnv
 	}
 
-	filePath := fmt.Sprintf("config/%s.json", env)
+	filePath := fmt.Sprintf("cdk/config/%s.json", env)
 
 	fileData, err := os.ReadFile(filePath)
 	if err != nil {
-		return nil, fmt.Errorf("Error leyendo el archivo %s: %w", filePath, err)
+		return nil, fmt.Errorf("error reading file: %s %w", filePath, err)
 	}
 	var config EnvConfig
 	err = json.Unmarshal(fileData, &config)
 	if err != nil {
-		return nil, fmt.Errorf("Error parseando el Json: %w", err)
+		return nil, fmt.Errorf("Error parsing JSON: %w", err)
 	}
 	return &config, nil
 }
 
-// main entry point
 func main() {
 	defer jsii.Close()
 
@@ -48,15 +49,13 @@ func main() {
 
 	envName := os.Getenv("ENV")
 	if envName == "" {
-		envName = "dev"
+		envName = defaultEnv
 	}
 	stackName := fmt.Sprintf("%sNetworkStack", envName)
 
 	NewNetworkStack(app, stackName, &NetworkStackProps{
 		StackProps: awscdk.StackProps{Env: env()},
-		MaxAZs:     config.MaxAzs,
-		VpcName:    config.VpcName,
-		Cidr:       config.Cidr,
+		Config:     config,
 	})
 
 	app.Synth(nil)

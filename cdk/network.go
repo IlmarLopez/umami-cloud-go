@@ -10,9 +10,7 @@ import (
 // NetworkStackProps defines the custom properties for our VPC environments.
 type NetworkStackProps struct {
 	awscdk.StackProps
-	MaxAZs  float64
-	VpcName string
-	Cidr    string
+	Config *EnvConfig
 }
 
 // NewNetworkStack creates the network infrastructure based on provided properties.
@@ -25,9 +23,9 @@ func NewNetworkStack(scope constructs.Construct, id string, props *NetworkStackP
 
 	// Effective Go practice: Indentation style for long struct initializations
 	awsec2.NewVpc(stack, jsii.String("VPC"), &awsec2.VpcProps{
-		VpcName:     jsii.String(props.VpcName),
-		IpAddresses: awsec2.IpAddresses_Cidr(jsii.String(props.Cidr)),
-		MaxAzs:      jsii.Number(props.MaxAZs),
+		VpcName:     jsii.String(props.Config.VpcName),
+		IpAddresses: awsec2.IpAddresses_Cidr(jsii.String(props.Config.Cidr)),
+		MaxAzs:      jsii.Number(props.Config.MaxAzs),
 		NatGateways: jsii.Number(0), // Recommended to avoid unexpected AWS costs
 	})
 
