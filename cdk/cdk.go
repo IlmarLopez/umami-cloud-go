@@ -12,9 +12,7 @@ import (
 const defaultEnv = "dev"
 
 type EnvConfig struct {
-	VpcName string  `json:"vpcName"`
-	Cidr    string  `json:"cidr"`
-	MaxAzs  float64 `json:"maxAzs"`
+	MaxAzs float64 `json:"maxAzs"`
 }
 
 func loadConfig() (*EnvConfig, error) {
@@ -51,10 +49,17 @@ func main() {
 	if envName == "" {
 		envName = defaultEnv
 	}
-	stackName := fmt.Sprintf("%sNetworkStack", envName)
+
+	var stackName string
+	if envName == "prod" {
+		stackName = "UmamiStackProd"
+	} else {
+		stackName = "UmamiStackDev"
+	}
 
 	NewNetworkStack(app, stackName, &NetworkStackProps{
 		StackProps: awscdk.StackProps{Env: env()},
+		EnvName:    envName,
 		Config:     config,
 	})
 
