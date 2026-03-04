@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"umami-cloud-go/cdk/config"
 
 	"github.com/aws/aws-cdk-go/awscdk/v2"
 	"github.com/aws/aws-cdk-go/awscdk/v2/awsec2"
@@ -13,7 +14,7 @@ import (
 type NetworkStackProps struct {
 	awscdk.StackProps
 	EnvName string
-	Config  *EnvConfig
+	Config  *config.EnvConfig
 }
 
 func NewNetworkStack(scope constructs.Construct, id string, props *NetworkStackProps) awscdk.Stack {
@@ -23,16 +24,10 @@ func NewNetworkStack(scope constructs.Construct, id string, props *NetworkStackP
 	}
 	stack := awscdk.NewStack(scope, &id, &sprops)
 
-	cidr := "10.0.0.0/16"
-	if props.EnvName == "prod" {
-		cidr = "10.1.0.0/16"
-
-	}
-
 	vpcName := fmt.Sprintf("UmamiStack-Network-%s", props.EnvName)
+
 	awsec2.NewVpc(stack, jsii.String("VPC"), &awsec2.VpcProps{
 		VpcName:     jsii.String(vpcName),
-		IpAddresses: awsec2.IpAddresses_Cidr(jsii.String(cidr)),
 		MaxAzs:      jsii.Number(props.Config.MaxAzs),
 		NatGateways: jsii.Number(0),
 	})

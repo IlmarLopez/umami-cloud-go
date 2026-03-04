@@ -1,44 +1,19 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
 	"os"
+
+	"umami-cloud-go/cdk/config"
 
 	"github.com/aws/aws-cdk-go/awscdk/v2"
 	"github.com/aws/jsii-runtime-go"
 )
 
-const defaultEnv = "dev"
-
-type EnvConfig struct {
-	MaxAzs float64 `json:"maxAzs"`
-}
-
-func loadConfig() (*EnvConfig, error) {
-	env := os.Getenv("ENV")
-	if env == "" {
-		env = defaultEnv
-	}
-
-	filePath := fmt.Sprintf("cdk/config/%s.json", env)
-
-	fileData, err := os.ReadFile(filePath)
-	if err != nil {
-		return nil, fmt.Errorf("error reading file: %s %w", filePath, err)
-	}
-	var config EnvConfig
-	err = json.Unmarshal(fileData, &config)
-	if err != nil {
-		return nil, fmt.Errorf("Error parsing JSON: %w", err)
-	}
-	return &config, nil
-}
-
 func main() {
 	defer jsii.Close()
 
-	config, err := loadConfig()
+	cfg, err := config.LoadConfig()
 	if err != nil {
 		panic(err)
 	}
@@ -47,20 +22,15 @@ func main() {
 
 	envName := os.Getenv("ENV")
 	if envName == "" {
-		envName = defaultEnv
+		envName = "dev"
 	}
 
-	var stackName string
-	if envName == "prod" {
-		stackName = "UmamiStackProd"
-	} else {
-		stackName = "UmamiStackDev"
-	}
+	stackName := fmt.Sprintf("umami-stack-%s", envName)
 
 	NewNetworkStack(app, stackName, &NetworkStackProps{
 		StackProps: awscdk.StackProps{Env: env()},
 		EnvName:    envName,
-		Config:     config,
+		Config:     cfg,
 	})
 
 	app.Synth(nil)
