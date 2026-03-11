@@ -9,7 +9,11 @@ import (
 const defaultEnv = "dev"
 
 type EnvConfig struct {
-	MaxAzs float64 `json:"maxAzs"`
+	VPC VPC `json:"vps"`
+}
+
+type VPC struct {
+	MaxAZs float64 `json:"max_azs"`
 }
 
 func LoadConfig() (*EnvConfig, error) {

@@ -11,24 +11,22 @@ import (
 )
 
 // NetworkStackProps defines the custom properties for our VPC environments.
-type NetworkStackProps struct {
+type VpcStackProps struct {
 	awscdk.StackProps
-	EnvName string
-	Config  *config.EnvConfig
+	EnvValue  string
+	StackName string
+	Config    *config.EnvConfig
 }
 
-func NewNetworkStack(scope constructs.Construct, id string, props *NetworkStackProps) awscdk.Stack {
-	var sprops awscdk.StackProps
-	if props != nil {
-		sprops = props.StackProps
-	}
-	stack := awscdk.NewStack(scope, &id, &sprops)
+func NewVpcStack(scope constructs.Construct, id string, props *VpcStackProps) awscdk.Stack {
 
-	vpcName := fmt.Sprintf("UmamiStack-Network-%s", props.EnvName)
+	stack := NewBaseStack(scope, id, &props.StackProps)
+
+	vpcName := fmt.Sprintf("%s-Network-%s", props.StackName, props.EnvValue)
 
 	awsec2.NewVpc(stack, jsii.String("VPC"), &awsec2.VpcProps{
 		VpcName:     jsii.String(vpcName),
-		MaxAzs:      jsii.Number(props.Config.MaxAzs),
+		MaxAzs:      jsii.Number(props.Config.VPC.MaxAZs),
 		NatGateways: jsii.Number(0),
 	})
 

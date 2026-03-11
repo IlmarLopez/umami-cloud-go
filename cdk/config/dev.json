@@ -1,3 +1,5 @@
 {
-    "maxAzs": 1
+    "vpc": {
+        "max_azs": 1
+    }
 }

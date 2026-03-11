@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"os"
 
 	"umami-cloud-go/cdk/config"
@@ -20,16 +19,17 @@ func main() {
 
 	app := awscdk.NewApp(nil)
 
-	envName := os.Getenv("ENV")
-	if envName == "" {
-		envName = "dev"
+	envValue := os.Getenv("ENV")
+	if envValue == "" {
+		envValue = "dev"
 	}
 
-	stackName := fmt.Sprintf("umami-stack-%s", envName)
+	stackName := "umami-cloud-go"
 
-	NewNetworkStack(app, stackName, &NetworkStackProps{
+	NewVpcStack(app, stackName, &VpcStackProps{
 		StackProps: awscdk.StackProps{Env: env()},
-		EnvName:    envName,
+		EnvValue:   envValue,
+		StackName:  stackName,
 		Config:     cfg,
 	})
 
