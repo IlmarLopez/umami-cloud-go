@@ -26,7 +26,7 @@ func main() {
 
 	stackName := "umami-cloud-go"
 
-	NewVpcStack(app, stackName, &VpcStackProps{
+	NewUmamiCloudGoStack(app, stackName, &UmamiStackProps{
 		StackProps: awscdk.StackProps{Env: env()},
 		EnvValue:   envValue,
 		StackName:  stackName,

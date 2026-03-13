@@ -9,7 +9,7 @@ import (
 const defaultEnv = "dev"
 
 type EnvConfig struct {
-	VPC VPC `json:"vps"`
+	VPC VPC `json:"vpc"`
 }
 
 type VPC struct {
