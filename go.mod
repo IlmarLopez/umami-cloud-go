@@ -1,6 +1,6 @@
 module umami-cloud-go
 
-go 1.23.0
+go 1.26.0
 
 require (
 	github.com/aws/aws-cdk-go/awscdk/v2 v2.238.0
