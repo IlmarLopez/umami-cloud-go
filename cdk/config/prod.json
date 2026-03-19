@@ -1,5 +1,8 @@
 {
     "vpc": {
         "max_azs": 2
+    },
+    "ec2": {
+        "instance_size": "t3.medium"
     }
 }
