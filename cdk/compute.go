@@ -28,11 +28,33 @@ func NewEC2(stack awscdk.Stack, vpc awsec2.Vpc, props *UmamiStackProps) awsec2.I
 	})
 	instanceName := fmt.Sprintf("%s-Server-%s", props.StackName, props.EnvValue)
 
+	userDataScript := `#!/bin/bash
+# Update the operating system
+dnf update -y
+
+# Install Docker
+dnf install -y docker
+
+# Enable and start the Docker engine
+systemctl enable docker
+systemctl start docker
+
+# Add the default user (ec2-user) to the docker group to avoid using 'sudo'
+usermod -aG docker ec2-user
+
+# Install Docker Compose
+curl -SL https://github.com/docker/compose/releases/latest/download/docker-compose-linux-x86_64 -o /usr/libexec/docker/cli-plugins/docker-compose
+chmod +x /usr/libexec/docker/cli-plugins/docker-compose
+`
+
+	userData := awsec2.UserData_Custom(jsii.String(userDataScript))
+
 	server := awsec2.NewInstance(stack, jsii.String("UmamiServer"), &awsec2.InstanceProps{
 		Vpc:          vpc,
 		InstanceType: instanceType,
 		MachineImage: machineImage,
 		InstanceName: jsii.String(instanceName),
+		UserData:     userData,
 	})
 
 	awscdk.Tags_Of(server).Add(jsii.String("Environment"), jsii.String(props.EnvValue), &awscdk.TagProps{})
