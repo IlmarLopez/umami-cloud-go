@@ -10,10 +10,15 @@ const defaultEnv = "dev"
 
 type EnvConfig struct {
 	VPC VPC `json:"vpc"`
+	EC2 EC2 `json:"ec2"`
 }
 
 type VPC struct {
 	MaxAZs float64 `json:"max_azs"`
+}
+
+type EC2 struct {
+	InstanceSize string `json:"instance_size"`
 }
 
 func LoadConfig() (*EnvConfig, error) {

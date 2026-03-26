@@ -22,6 +22,8 @@ func NewUmamiCloudGoStack(scope constructs.Construct, id string, props *UmamiSta
 
 	stack := awscdk.NewStack(scope, &id, &sprops)
 
-	NewVPC(stack, id, props)
+	vpc := NewVPC(stack, id, props)
+
+	NewEC2(stack, vpc, props)
 	return stack
 }
