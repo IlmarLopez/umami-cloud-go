@@ -24,7 +24,13 @@ func main() {
 		envValue = "dev"
 	}
 
-	stackName := "umami-cloud-go"
+	var stackName string
+
+	if envValue == "prod" {
+		stackName = "UmamiStackProd"
+	} else {
+		stackName = "UmamiStackDev"
+	}
 
 	NewUmamiCloudGoStack(app, stackName, &UmamiStackProps{
 		StackProps: awscdk.StackProps{Env: env()},

@@ -1,15 +1,13 @@
-name: Deploy Umami Cloud Infrastructure
+name: Deploy Umami Dev
 
 on:
   push:
     branches:
       - dev
-      - main
 
 jobs:
   deploy:
-    runs-on: ubuntu-latest 
-
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -17,7 +15,7 @@ jobs:
       - name: Setup Go
         uses: actions/setup-go@v5
         with:
-          go-version: '1.22'
+          go-version: 'stable' 
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -32,16 +30,10 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-east-1 
+          aws-region: us-east-1
 
       - name: Install Go dependencies
         run: go mod tidy
 
-     
       - name: Deploy to Dev Environment
-        if: github.ref == 'refs/heads/dev'
-        run: cdk deploy umami-cloud-go --require-approval never
-      
-      - name: Deploy to Prod Environment
-        if: github.ref == 'refs/heads/main'
-        run: cdk deploy umami-cloud-go --require-approval never
+        run: cdk deploy UmamiStackDev --require-approval never
