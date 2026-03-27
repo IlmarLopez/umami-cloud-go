@@ -40,9 +40,8 @@ jobs:
      
       - name: Deploy to Dev Environment
         if: github.ref == 'refs/heads/dev'
-        run: cdk deploy UmamiStackDev --require-approval never
-
+        run: cdk deploy umami-cloud-go --require-approval never
       
       - name: Deploy to Prod Environment
         if: github.ref == 'refs/heads/main'
-        run: cdk deploy UmamiStackProd --require-approval never
+        run: cdk deploy umami-cloud-go --require-approval never
