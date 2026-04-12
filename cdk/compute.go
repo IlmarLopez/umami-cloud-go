@@ -58,5 +58,13 @@ chmod +x /usr/libexec/docker/cli-plugins/docker-compose
 	})
 
 	awscdk.Tags_Of(server).Add(jsii.String("Environment"), jsii.String(props.EnvValue), &awscdk.TagProps{})
+
+	server.Connections().AllowFromAnyIpv4(
+		awsec2.Port_Tcp(jsii.Number(3000)),
+		jsii.String("Allow inbound traffic for Umami on port 3000"),
+	)
+
+	awscdk.Tags_Of(server).Add(jsii.String("Environment"), jsii.String(props.EnvValue), &awscdk.TagProps{})
+
 	return server
 }
