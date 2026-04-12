@@ -35,5 +35,5 @@ jobs:
       - name: Install Go dependencies
         run: go mod tidy
 
-      - name: Deploy to Prod Environment
-        run: cdk deploy UmamiStackProd --require-approval never
+      - name: Deploy to Dev Environment
+        run: npx cdk deploy umami-cloud-go --require-approval never
