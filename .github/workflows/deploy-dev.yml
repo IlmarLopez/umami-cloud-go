@@ -36,4 +36,4 @@ jobs:
         run: go mod tidy
 
       - name: Deploy to Dev Environment
-        run: cdk deploy UmamiStackDev --require-approval never
+        run: npx cdk deploy umami-cloud-go --require-approval never
