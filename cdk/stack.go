@@ -5,6 +5,7 @@ import (
 
 	"github.com/aws/aws-cdk-go/awscdk/v2"
 	"github.com/aws/constructs-go/constructs/v10"
+	"github.com/aws/jsii-runtime-go"
 )
 
 type UmamiStackProps struct {
@@ -24,6 +25,13 @@ func NewUmamiCloudGoStack(scope constructs.Construct, id string, props *UmamiSta
 
 	vpc := NewVPC(stack, id, props)
 
-	NewEC2(stack, vpc, props)
+	server := NewEC2(stack, vpc, props)
+
+	// Crear el output automático
+	awscdk.NewCfnOutput(stack, jsii.String("UmamiURL"), &awscdk.CfnOutputProps{
+		Value:       jsii.String("http://" + *server.InstancePublicIp() + ":3000"),
+		Description: jsii.String("URL para acceder a tu panel de Umami"),
+	})
+
 	return stack
 }
