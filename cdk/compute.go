@@ -31,9 +31,9 @@ func NewEC2(stack awscdk.Stack, vpc awsec2.IVpc, props *UmamiStackProps) awsec2.
 
 	instanceName := fmt.Sprintf("%s-Server-%s", props.StackName, props.EnvValue)
 
-	scriptBytes, err := os.ReadFile("scripts/user-data.sh")
+	scriptBytes, err := os.ReadFile("scripts/deploy-umami.sh")
 	if err != nil {
-		panic(fmt.Sprintf("Error crítico: No se encontró scripts/user-data.sh: %v", err))
+		panic(fmt.Sprintf("Critical error: scripts/user-data.sh not found: %v", err))
 	}
 
 	userData := awsec2.UserData_Custom(jsii.String(string(scriptBytes)))

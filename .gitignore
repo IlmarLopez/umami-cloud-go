@@ -23,3 +23,5 @@ cdk.out
 
 # CDK output
 cdk.out/
+
+cdk.context.json
