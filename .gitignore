@@ -20,3 +20,8 @@ cdk.out
 
 # Local environment files
 .env
+
+# CDK output
+cdk.out/
+
+cdk.context.json
