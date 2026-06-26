@@ -46,8 +46,15 @@ func main() {
 }
 
 func env() *awscdk.Environment {
+	account := os.Getenv("CDK_DEFAULT_ACCOUNT")
+	region := os.Getenv("CDK_DEFAULT_REGION")
+
+	if account == "" || region == "" {
+		return nil
+	}
+
 	return &awscdk.Environment{
-		Account: jsii.String("947632012413"),
-		Region:  jsii.String("us-east-2"),
+		Account: jsii.String(account),
+		Region:  jsii.String(region),
 	}
 }
